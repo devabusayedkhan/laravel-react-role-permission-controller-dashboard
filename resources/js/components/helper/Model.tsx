@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({
         {title && <h2 className="text-lg font-bold mb-4">{title}</h2>}
 
         {/* Content */}
-        <div className="skShadow p-8 rounded-md">{children}</div>
+        <div className="rounded-md">{children}</div>
       </div>
     </div>
   );

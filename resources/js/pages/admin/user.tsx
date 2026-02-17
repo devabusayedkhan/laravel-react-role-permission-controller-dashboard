@@ -140,8 +140,6 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
   const debounceRef = useRef<number | null>(null);
 
   const runSearch = (q: string) => {
-    // ✅ search change হলেই request যাবে
-    // ✅ page reset করার জন্য url-এ page param পাঠাচ্ছি না (Laravel default page 1)
     router.get(
       route(INDEX_ROUTE),
       { q: q?.trim() ? q.trim() : undefined },
@@ -149,7 +147,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        only: ['users', 'filters'], // ✅ fast & clean (optional)
+        only: ['users', 'filters'],
       },
     );
   };
@@ -157,7 +155,6 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
   const onSearchChange = (val: string) => {
     setSearch(val);
 
-    // ✅ debounce (typing করলে একসাথে অনেক request যাবে না)
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
 
     debounceRef.current = window.setTimeout(() => {
@@ -244,7 +241,6 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
         setCreateOpen(false);
         createForm.reset();
 
-        // ✅ create এর পরে current search বজায় রেখে তালিকা রিফ্রেশ
         runSearch(search);
       },
 
@@ -331,8 +327,6 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
           showConfirmButton: false,
           timer: 1200,
         });
-
-        // ✅ delete এর পরে current search বজায় রেখে তালিকা রিফ্রেশ
         runSearch(search);
       },
 
@@ -471,7 +465,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
 
       {/* ---------------- CREATE MODAL ---------------- */}
       <Modal isOpen={createOpen} onClose={closeCreate} title="Create User" width="w-full max-w-xl">
-        <form onSubmit={submitCreate} className="space-y-4">
+        <form onSubmit={submitCreate} className="space-y-4" autoComplete="off">
           <div>
             <label className="text-sm font-semibold">Name</label>
             <input
@@ -488,6 +482,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
             <label className="text-sm font-semibold">Email</label>
             <input
               type="email"
+              autoComplete="off"
               className="mt-1 w-full rounded border px-3 py-2 dark:bg-slate-800"
               value={createForm.data.email}
               onChange={(e) => createForm.setData('email', e.target.value)}
@@ -502,6 +497,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
               <label className="text-sm font-semibold">Password</label>
               <input
                 type="password"
+                autoComplete="off"
                 className="mt-1 w-full rounded border px-3 py-2 dark:bg-slate-800"
                 value={createForm.data.password}
                 onChange={(e) => createForm.setData('password', e.target.value)}
@@ -515,6 +511,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
               <label className="text-sm font-semibold">Confirm Password</label>
               <input
                 type="password"
+                autoComplete="new-password"
                 className="mt-1 w-full rounded border px-3 py-2 dark:bg-slate-800"
                 value={createForm.data.password_confirmation}
                 onChange={(e) => createForm.setData('password_confirmation', e.target.value)}
@@ -569,6 +566,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
             <label className="text-sm font-semibold">Email</label>
             <input
               type="email"
+              autoComplete="off"
               className="mt-1 w-full rounded border px-3 py-2 dark:bg-slate-800"
               value={editForm.data.email}
               onChange={(e) => editForm.setData('email', e.target.value)}
@@ -583,6 +581,7 @@ export default function AdminUsersPage({ users, roles, auth, filters }: Props) {
               <label className="text-sm font-semibold">New Password (optional)</label>
               <input
                 type="password"
+                autoComplete="new-password"
                 className="mt-1 w-full rounded border px-3 py-2 dark:bg-slate-800"
                 value={editForm.data.password}
                 onChange={(e) => editForm.setData('password', e.target.value)}
